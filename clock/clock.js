@@ -4,63 +4,34 @@
 //
 
 export class Clock {
+  static #MINUTES_IN_HOUR = 60;
+  static #HOURS_IN_DAY = 24;
+  #minutes;
   constructor(hours, minutes = 0) {
-    this.hours = hours;
-    this.minutes = minutes;
+    this.#minutes = hours * Clock.#MINUTES_IN_HOUR + minutes;
   }
-
   get hours() {
-    return this._hours;
+    const hours =
+      Math.floor(this.#minutes / Clock.#MINUTES_IN_HOUR) % Clock.#HOURS_IN_DAY;
+    return hours >= 0 ? hours : hours + Clock.#HOURS_IN_DAY;
   }
-
-  set hours(value) {
-    const isPositive = value > 0 ? 1 : -1;
-    const absoluteValue = Math.abs(value) % 24;
-    this._hours = (isPositive === 1 ? absoluteValue : 24 - absoluteValue) % 24;
-  }
-
   get minutes() {
-    return this._minutes;
+    const minutes = this.#minutes % Clock.#MINUTES_IN_HOUR;
+    return minutes >= 0 ? minutes : minutes + Clock.#MINUTES_IN_HOUR;
   }
-
-  set minutes(value) {
-    if (value === 0) {
-      this._minutes = 0;
-      return;
-    }
-    const isPositive = value > 0 ? 1 : -1;
-    const absoluteValue = Math.abs(value);
-    const minutes = absoluteValue % 60;
-
-    if (absoluteValue >= 60) {
-      const hours = Math.floor(absoluteValue / 60);
-      this.hours = this.hours + hours * isPositive;
-    }
-
-    if (isPositive === -1 && minutes > 0) {
-      this.hours = this.hours - 1;
-      this._minutes = 60 - minutes;
-    } else {
-      this._minutes = minutes;
-    }
-  }
-
   toString() {
     return `${String(this.hours).padStart(2, 0)}:${String(
       this.minutes,
     ).padStart(2, 0)}`;
   }
-
   plus(value) {
-    this.minutes = this.minutes + value;
+    this.#minutes += value;
     return this;
   }
-
   minus(value) {
-    this.minutes = this.minutes - value;
+    this.#minutes -= value;
     return this;
   }
-
   equals(anotherClock) {
     return this.toString() === anotherClock.toString();
   }
