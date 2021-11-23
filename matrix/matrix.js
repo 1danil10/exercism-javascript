@@ -9,21 +9,9 @@ export class Matrix {
   }
 
   #createMatrix(matrixStr) {
-    const matrix = [];
-    const splitteMatrixStr = matrixStr.split('\n');
-
-    for (let i = 0, len = splitteMatrixStr.length; i < len; i += 1) {
-      const row = [];
-      const splittedRowString = splitteMatrixStr[i].split(' ');
-
-      for (let j = 0, rowLen = splittedRowString.length; j < rowLen; j += 1) {
-        row.push(Number(splittedRowString[j]));
-      }
-
-      matrix.push(row);
-    }
-
-    return matrix;
+    return matrixStr
+      .split('\n')
+      .map((rowStr) => rowStr.split(' ').map((rowEl) => Number(rowEl)));
   }
 
   get rows() {
@@ -31,17 +19,14 @@ export class Matrix {
   }
 
   get columns() {
-    const matrixColumns = [];
-
-    for (let i = 0, len = this.matrix.length; i <= len; i += 1) {
-      const column = [];
-
-      for (let j = 0; j < len; j += 1) {
-        column.push(this.matrix[j][i]);
-      }
-      matrixColumns.push(column);
-    }
-
-    return matrixColumns;
+    return this.matrix.reduce((resultMatrix, matrixRow) => {
+      matrixRow.forEach((rowElement, rowElementIdx) => {
+        if (!resultMatrix[rowElementIdx]) {
+          resultMatrix[rowElementIdx] = [];
+        }
+        resultMatrix[rowElementIdx].push(rowElement);
+      });
+      return resultMatrix;
+    }, []);
   }
 }
