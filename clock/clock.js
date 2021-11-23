@@ -4,28 +4,22 @@
 //
 
 export class Clock {
-  static #MINUTES_IN_HOUR = 60;
-  static #HOURS_IN_DAY = 24;
-  static #MINUTES_IN_DAY = Clock.#HOURS_IN_DAY * Clock.#MINUTES_IN_HOUR;
   #minutes;
   constructor(hours, minutes = 0) {
-    this.#minutes = this.#setMinutes(hours * Clock.#MINUTES_IN_HOUR + minutes);
+    this.setMinutes(hours * 60 + minutes);
   }
 
-  #setMinutes(value) {
-    return value < 0
-      ? (value % Clock.#MINUTES_IN_DAY) + Clock.#MINUTES_IN_DAY
-      : value;
+  setMinutes(value) {
+    const newMinutes = value % (24 * 60);
+    this.#minutes = newMinutes < 0 ? newMinutes + 24 * 60 : newMinutes;
   }
 
   get hours() {
-    return (
-      Math.floor(this.#minutes / Clock.#MINUTES_IN_HOUR) % Clock.#HOURS_IN_DAY
-    );
+    return Math.floor(this.#minutes / 60) % 24;
   }
 
   get minutes() {
-    return this.#minutes % Clock.#MINUTES_IN_HOUR;
+    return this.#minutes % 60;
   }
 
   toString() {
@@ -35,12 +29,12 @@ export class Clock {
   }
 
   plus(value) {
-    this.#minutes = this.#setMinutes(this.#minutes + value);
+    this.setMinutes(this.#minutes + value);
     return this;
   }
 
   minus(value) {
-    this.#minutes = this.#setMinutes(this.#minutes - value);
+    this.setMinutes(this.#minutes - value);
     return this;
   }
 
